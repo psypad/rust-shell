@@ -1,1 +1,1 @@
-# POSIX-shell-rust
+# Shell in rust
