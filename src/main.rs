@@ -1,5 +1,6 @@
 use std::io::{self, Write};
 
+
 enum TokenType {
     ECHO,
     EXIT,
@@ -57,4 +58,5 @@ fn main() {
         }
         
     }
+
 }
