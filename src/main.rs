@@ -1,5 +1,4 @@
-use std::io::{self, Write};
-
+use std::{io::{self, Write}, str::FromStr};
 
 enum TokenType {
     ECHO,
@@ -7,7 +6,33 @@ enum TokenType {
     TYPE,
 }
 
-fn token_array_builder(input: String) -> Vec<String>{
+// converting from string to type TokenType 
+// check if a given keyword is enumerated
+impl FromStr for TokenType{
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str(){
+            "echo" => Ok(TokenType::ECHO),
+            "type" => Ok(TokenType::TYPE),
+            "exit" => Ok(TokenType::EXIT),
+            _=> Err(()),
+        }
+    }
+}
+
+struct Command{
+    keyword: String,
+    arguments: Vec<String>
+}
+
+fn print_prompt(){
+        print!("$ ");
+        io::stdout().flush().unwrap();
+}
+
+// takes input string -> builds token array -> then appends it to a token struct
+fn token_struct_builder(input: String) -> Command{
 
         let mut token_array: Vec<String> = vec![];
         let mut current_token = String::new();
@@ -27,15 +52,26 @@ fn token_array_builder(input: String) -> Vec<String>{
             token_array.push(current_token);
         }
 
-        return token_array;
+        Command{
+            keyword:token_array.remove(0),
+            arguments:token_array
+        }
+
 }
 
-fn print_prompt(){
-        print!("$ ");
-        io::stdout().flush().unwrap();
+// gives the keywords function 
+fn define_function(command : Command){
+    match TokenType::from_str(&command.keyword){
+        Ok(TokenType::ECHO) => echo(&command.arguments),
+        _ => {
+            println!("command {} not found", &command.keyword);
+        }
+    }
 }
 
-
+fn echo(arg: &Vec<String>){
+    println!("{}", arg.join(" "));
+}
 
 fn main() {
     let stdin = io::stdin();
@@ -46,17 +82,11 @@ fn main() {
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
         
-        let token_array: Vec<String> = token_array_builder(input.clone());
+        let token_struct: Command = token_struct_builder(input.clone());
 
-        println!("DEBUG (raw input): {}", input);
-        println!("DEBUG (tokenized array): {:?}",token_array);
+        print!("DEBUG (raw input): {}", input);
+        println!("DEBUG (tokenized array): {} {:?}", token_struct.keyword, token_struct.arguments);
 
-        match &token_array[0] {
-            //"exit 0" => break,
-            //"echo".to_owned() => println!("{}", &input[5..]),
-            _ => println!(": command not found"),
-        }
-        
+        define_function(token_struct);
     }
-
 }
