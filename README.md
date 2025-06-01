@@ -1,6 +1,6 @@
 # A modern shell in rust
 
-todo
+## todo
 - implement external commands
 - complete implementations of builtins
 - implement tests
