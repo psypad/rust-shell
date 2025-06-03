@@ -1,4 +1,5 @@
 use std::{io::{self, Write}, str::FromStr};
+use std::process;
 
 enum TokenType {
     ECHO,
@@ -63,6 +64,8 @@ fn token_struct_builder(input: String) -> Command{
 fn define_function(command : Command){
     match TokenType::from_str(&command.keyword){
         Ok(TokenType::ECHO) => echo(&command.arguments),
+        Ok(TokenType::EXIT) => exit(&command.arguments),
+        Ok(TokenType::TYPE) => type_check(&command.arguments),
         _ => {
             println!("command {} not found", &command.keyword);
         }
@@ -73,8 +76,24 @@ fn echo(arg: &Vec<String>){
     println!("{}", arg.join(" "));
 }
 
+fn exit(arg: &Vec<String>){
+    process::exit(0);
+}
+
+fn type_check(arg: &Vec<String>){
+    match TokenType::from_str(&arg[0]){
+        Ok(TokenType::ECHO) => println!("echo is a shell builtin"),
+        Ok(TokenType::EXIT) => println!("exit is a shell builtin"),
+        Ok(TokenType::TYPE) => println!("type is a shell builtin"),
+        _ => {
+            println!("command {} not found", &arg[0]);
+        }
+    }
+}
+
 fn main() {
     let stdin = io::stdin();
+    
 
     loop {
         print_prompt();
@@ -88,5 +107,6 @@ fn main() {
         println!("DEBUG (tokenized array): {} {:?}", token_struct.keyword, token_struct.arguments);
 
         define_function(token_struct);
+
     }
 }
