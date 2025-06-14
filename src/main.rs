@@ -1,10 +1,23 @@
 use std::{io::{self, Write}, str::FromStr};
 use std::process;
+use std::env;
+use std::path::Path;
 
+//PREAMBLE
 enum TokenType {
     ECHO,
     EXIT,
     TYPE,
+    PWD,
+    CD,
+}
+
+enum TokenTypesAdvanced{
+    Keyword(String),
+    Argument(String),
+    Pipe,
+    RedirectOut,
+    RedirectIn,
 }
 
 // converting from string to type TokenType 
@@ -17,6 +30,8 @@ impl FromStr for TokenType{
             "echo" => Ok(TokenType::ECHO),
             "type" => Ok(TokenType::TYPE),
             "exit" => Ok(TokenType::EXIT),
+            "pwd" => Ok(TokenType::PWD),
+            "cd" => Ok(TokenType::CD),
             _=> Err(()),
         }
     }
@@ -53,6 +68,8 @@ fn token_struct_builder(input: String) -> Command{
             token_array.push(current_token);
         }
 
+        println!("DEBUG (tokenized array): {:?}", token_array);
+
         Command{
             keyword:token_array.remove(0),
             arguments:token_array
@@ -64,19 +81,33 @@ fn token_struct_builder(input: String) -> Command{
 fn define_function(command : Command){
     match TokenType::from_str(&command.keyword){
         Ok(TokenType::ECHO) => echo(&command.arguments),
-        Ok(TokenType::EXIT) => exit(&command.arguments),
+        Ok(TokenType::EXIT) => exit(),
         Ok(TokenType::TYPE) => type_check(&command.arguments),
+        Ok(TokenType::PWD) => pwd().expect("might panic: dunno why cause it just has to print the working dir"),
+        Ok(TokenType::CD) => cd(&command.arguments),
         _ => {
             println!("command {} not found", &command.keyword);
         }
     }
 }
 
+//PREAMBLE END
+//------------------------------------------------------------
+
+// todo implementations
+
+//split into different files 
+//need to figure that out
+
+
+//Command functions
+
+//Builtins
 fn echo(arg: &Vec<String>){
     println!("{}", arg.join(" "));
 }
 
-fn exit(arg: &Vec<String>){
+fn exit(){
     process::exit(0);
 }
 
@@ -85,28 +116,52 @@ fn type_check(arg: &Vec<String>){
         Ok(TokenType::ECHO) => println!("echo is a shell builtin"),
         Ok(TokenType::EXIT) => println!("exit is a shell builtin"),
         Ok(TokenType::TYPE) => println!("type is a shell builtin"),
+        Ok(TokenType::PWD) => println!("pwd is a shell builtin"),
+        Ok(TokenType::CD) => println!("cd is a shell builtin"),
         _ => {
             println!("command {} not found", &arg[0]);
         }
     }
 }
 
+fn pwd() -> std::io::Result<()>{
+    let working_dir  = env::current_dir()?;
+    println!("{}", working_dir.display());
+    Ok(())
+}
+
+fn cd(arg: &Vec<String>){
+
+}
+
+//External commands
+
+//-------------
+//Main function
 fn main() {
     let stdin = io::stdin();
     
-
     loop {
         print_prompt();
 
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
         
+        print!("DEBUG (raw input): {}", input);
+        
         let token_struct: Command = token_struct_builder(input.clone());
 
-        print!("DEBUG (raw input): {}", input);
-        println!("DEBUG (tokenized array): {} {:?}", token_struct.keyword, token_struct.arguments);
+
+        println!("DEBUG (Command struct): {} {:?}", token_struct.keyword, token_struct.arguments);
 
         define_function(token_struct);
 
     }
+}
+
+//tests
+#[cfg(test)]
+
+fn first_test(){
+
 }
