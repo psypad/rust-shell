@@ -1,7 +1,12 @@
+mod lexer;
+mod parser;
+mod commands;
+
 use std::{io::{self, Write}, str::FromStr};
 use std::process;
 use std::env;
 use std::path::Path;
+
 
 //PREAMBLE
 enum TokenType {
@@ -10,14 +15,6 @@ enum TokenType {
     TYPE,
     PWD,
     CD,
-}
-
-enum TokenTypesAdvanced{
-    Keyword(String),
-    Argument(String),
-    Pipe,
-    RedirectOut,
-    RedirectIn,
 }
 
 // converting from string to type TokenType 
@@ -91,14 +88,12 @@ fn define_function(command : Command){
     }
 }
 
+//Newamble
+
+//-----moved the new lexer to its own file 
+
 //PREAMBLE END
 //------------------------------------------------------------
-
-// todo implementations
-
-//split into different files 
-//need to figure that out
-
 
 //Command functions
 
@@ -132,6 +127,10 @@ fn pwd() -> std::io::Result<()>{
 
 fn cd(arg: &Vec<String>){
 
+}
+
+fn pipe_behaviour(){
+    
 }
 
 //External commands
