@@ -6,7 +6,7 @@ use std::{io::{self, Write}, str::FromStr};
 use std::process;
 use std::env;
 use std::path::Path;
-
+use lexer::lexer;
 
 //PREAMBLE
 enum TokenType {
@@ -147,13 +147,15 @@ fn main() {
         stdin.read_line(&mut input).unwrap();
         
         print!("DEBUG (raw input): {}", input);
+
+        let tokenprinter  = lexer(input);
         
-        let token_struct: Command = token_struct_builder(input.clone());
+        //let token_struct: Command = token_struct_builder(input.clone());
 
+        println!("{:?}",tokenprinter);
+        //println!("DEBUG (Command struct): {} {:?}", token_struct.keyword, token_struct.arguments);
 
-        println!("DEBUG (Command struct): {} {:?}", token_struct.keyword, token_struct.arguments);
-
-        define_function(token_struct);
+       //define_function(token_struct);
 
     }
 }
