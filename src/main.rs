@@ -1,9 +1,11 @@
 mod lexer;
 mod parser;
 mod commands;
+mod tokenizer;
 
 use std::{io::{self, Write}};
-use lexer::lexer;
+
+use crate::tokenizer::tokenizer;
 
 fn print_prompt(){
         print!("$ ");
@@ -21,9 +23,7 @@ fn main() {
         
         print!("DEBUG (raw input): {}", input);
 
-        let tokenprinter  = lexer(input);
-        
-        println!("{:?}",tokenprinter);
+        tokenizer(input);
     }
 }
 
