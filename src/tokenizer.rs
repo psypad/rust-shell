@@ -17,7 +17,7 @@ pub fn tokenizer(mut input: String){
 
     let mut arg_arr: Vec<String> = Vec::new();
 
-    let text = "echo \"hello world\" | type --f -i echo | echo hello world2 | echo lmao2 > grep \"this words\" > cat ~/Document/new_folder/lmao.txt".to_owned();
+    let text = "echo \"hello world\" ".to_owned();
     let re = Regex::new(r#""[^"]*"|[|<>]|\S+"#).unwrap();
 
     for s in re.captures_iter(text.as_str()){    

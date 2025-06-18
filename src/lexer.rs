@@ -11,7 +11,7 @@ pub enum TokenTypesAdvanced{
     RedirectIn,
 }
 
-pub fn lexer(tokenized: Vec<String>){
+pub fn lexer(tokenized: Vec<String>) {
     let mut token_type_vec:Vec<TokenTypesAdvanced> = Vec::new();
 
     for part in tokenized{
