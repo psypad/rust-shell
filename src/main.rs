@@ -5,7 +5,6 @@ mod tokenizer;
 mod executor;
 
 use std::{io::{self, Write}};
-
 use crate::tokenizer::tokenizer;
 
 fn print_prompt(){

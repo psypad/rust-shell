@@ -23,33 +23,47 @@ pub fn parse_from(index: &mut usize ,tokens: &Vec<TokenTypesAdvanced>) -> Comman
     let mut arguments = vec![];
     let mut control_flow = ControlFlow::None;
 
-    while *index < tokens.len() {
-        match &tokens[*index] {
-            TokenTypesAdvanced::Keyword(k) => {
-                keyword = k.clone();
-                *index += 1;
-            },
-            TokenTypesAdvanced::Argument(arg) => {
-                arguments.push(arg.clone());
-                *index += 1;
-            },
-            TokenTypesAdvanced::Pipe => {
-                *index += 1;
-                control_flow = ControlFlow::Pipe(Box::new(parse_from(index, tokens)));
-                break;
-            },
-            TokenTypesAdvanced::RedirectOut => {
-                *index += 1;
-                control_flow = ControlFlow::RedirectOut(Box::new(parse_from(index, tokens)));
-                break;
-            },
-            TokenTypesAdvanced::RedirectIn => {
-                *index += 1;
-                control_flow = ControlFlow::RedirectIn(Box::new(parse_from(index, tokens)));
-                break;
-            },
-            _ => { *index += 1; }
-        }      
+    while *index < tokens.len() {    
+        if keyword.is_empty() {
+            match &tokens[*index] {
+                TokenTypesAdvanced::Keyword(k) => {
+                    keyword = k.clone();
+                    *index += 1;                    
+                },
+                _ => {}
+            }
+        } else {
+            match &tokens[*index] {
+                TokenTypesAdvanced::Argument(a) => {
+                    arguments.push(a.clone());
+                    *index += 1;
+                },
+                TokenTypesAdvanced::Keyword(k) => {
+                    arguments.push(k.clone()); 
+                    *index += 1;
+                },
+                TokenTypesAdvanced::Option(o) => {
+                    arguments.push(o.clone());
+                    *index += 1;
+                },
+                TokenTypesAdvanced::Pipe => {
+                    *index += 1;
+                    control_flow = ControlFlow::Pipe(Box::new(parse_from(index, tokens)));
+                    break;
+                },
+                TokenTypesAdvanced::RedirectOut => {
+                    *index += 1;
+                    control_flow = ControlFlow::RedirectOut(Box::new(parse_from(index, tokens)));
+                    break;
+                },
+                TokenTypesAdvanced::RedirectIn => {
+                    *index += 1;
+                    control_flow = ControlFlow::RedirectIn(Box::new(parse_from(index, tokens)));
+                    break;
+                },
+                _ => { *index += 1;}  
+            } 
+        }
     }
 
     CommandNode {
