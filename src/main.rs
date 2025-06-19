@@ -2,6 +2,7 @@ mod lexer;
 mod parser;
 mod commands;
 mod tokenizer;
+mod executor;
 
 use std::{io::{self, Write}};
 

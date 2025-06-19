@@ -5,7 +5,7 @@ use std::process;
 //External commands
 
 //Builtins
-fn echo(arg: &Vec<String>){
+pub fn echo(arg: &Vec<String>){
     println!("{}", arg.join(" "));
 }
 

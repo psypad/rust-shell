@@ -1,4 +1,5 @@
 use crate::lexer::{self, TokenTypesAdvanced};
+use crate::executor::executor;
 
 #[derive(Debug)]
 pub enum ControlFlow{
@@ -10,9 +11,9 @@ pub enum ControlFlow{
 
 #[derive(Debug)]
 pub struct CommandNode{
-    keyword: String,
-    argument: Vec<String>,
-    control_flow: ControlFlow,
+    pub keyword: String,
+    pub argument: Vec<String>,
+    pub control_flow: ControlFlow,
 }
 
 pub fn parse_from(index: &mut usize ,tokens: &Vec<TokenTypesAdvanced>) -> CommandNode{
@@ -59,9 +60,11 @@ pub fn parse_from(index: &mut usize ,tokens: &Vec<TokenTypesAdvanced>) -> Comman
 }
 
 
-pub fn parser(token_type_vec: Vec<TokenTypesAdvanced>){
+pub fn parser(token_type_vec: Vec<TokenTypesAdvanced>) {
     let mut index = 0;
     let ast = parse_from(&mut index, &token_type_vec);
 
     println!("DEBUG (AST root): {:?}", ast); 
+    
+    executor(ast);
 }
