@@ -7,4 +7,4 @@ Creating a shell in rust to learn about how shell commands are implemented, to i
 - complete implementations of builtins
 - implement tests
 - implement grammar for parsing
-- implement external commands
+
