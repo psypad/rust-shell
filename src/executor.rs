@@ -1,16 +1,16 @@
-use crate::parser::{self,CommandNode,ControlFlow};
-use crate::commands::{echo, exit, type_check};
+use crate::parser::{CommandNode,ControlFlow};
+use crate::commands::{echo, exit, type_check,cd,cat,pwd,grep,ls};
 
 pub fn executor(command: CommandNode){
     match command.keyword.as_str(){
         "echo" => echo(&command.argument), 
         "exit" => exit(),
         "type" => type_check(&command.argument),
-        /*
-        "cd"   =>
-        "pwd"  =>
-        "cat" | "grep" | "ls" => 
-        */
+        "cd"   => cd(&command.argument),
+        "pwd"  => pwd().expect("panic!"),
+        "cat"  =>cat(&command.argument),
+        "grep" =>grep(&command.argument),
+        "ls"   => ls(&command.argument),
         _ => ()
     }
 

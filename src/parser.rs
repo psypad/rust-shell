@@ -1,4 +1,4 @@
-use crate::lexer::{self, TokenTypesAdvanced};
+use crate::lexer::{TokenTypesAdvanced};
 use crate::executor::executor;
 
 #[derive(Debug)]
@@ -22,15 +22,33 @@ pub fn parse_from(index: &mut usize ,tokens: &Vec<TokenTypesAdvanced>) -> Comman
     let mut keyword = String::new();
     let mut arguments = vec![];
     let mut control_flow = ControlFlow::None;
+    let mut keyword_found = false;
+
 
     while *index < tokens.len() {    
         if keyword.is_empty() {
             match &tokens[*index] {
                 TokenTypesAdvanced::Keyword(k) => {
                     keyword = k.clone();
+                    keyword_found = true;
                     *index += 1;                    
                 },
-                _ => {}
+                _ => {
+                    match &tokens[*index] {
+                        TokenTypesAdvanced::Argument(arg) => {
+                            println!("command not found: {}", arg);
+                            break;
+                        },
+                        TokenTypesAdvanced::Option(opt) => {
+                            println!("command not found: {}", opt);
+                            break;
+                        },
+                        _ => {
+                            println!("command not found.");
+                            break;
+                        }
+                    }
+                }
             }
         } else {
             match &tokens[*index] {
