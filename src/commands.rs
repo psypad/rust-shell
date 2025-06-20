@@ -65,7 +65,6 @@ pub fn type_check(arg: &Vec<String>){
     }
 }
 
-// `cd` - Change directory
 pub fn cd(args: &Vec<String>) {
     if args.is_empty() {
         match env::var("HOME") {
